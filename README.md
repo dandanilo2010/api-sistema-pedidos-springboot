@@ -1,26 +1,42 @@
-📦 Sistema de Pedidos - Backend (Spring Boot)
+📦 Sistema de Pedidos - API REST (Spring Boot)
 
-API REST desenvolvida com Java + Spring Boot para gerenciamento de clientes, produtos e pedidos, seguindo boas práticas de arquitetura em camadas, validações e regras de negócio.
+API REST desenvolvida com Java + Spring Boot para gerenciamento de clientes, produtos e pedidos, com autenticação e autorização utilizando JWT e Spring Security.
 
-🚀 Tecnologias utilizadas
+🚀 Tecnologias
 
 Java 17+
 
 Spring Boot
 
-Spring Data JPA
+Spring Data JPA / Hibernate
 
-Hibernate
+Spring Security
+
+JWT (JSON Web Token)
 
 MySQL
 
 Lombok
 
-Bean Validation (@Valid, @NotNull, @NotEmpty)
+Bean Validation
 
-Tratamento global de exceções
+Maven
 
-Paginação com Spring Data (Pageable)
+🔐 Segurança
+
+Autenticação com JWT
+
+Senhas criptografadas com BCrypt
+
+Filtro de autenticação customizado (JwtAuthenticationFilter)
+
+Integração com UserDetailsService
+
+Controle de acesso por perfil (ROLE_ADMIN / ROLE_USER)
+
+Autorização por endpoint com @PreAuthorize
+
+API stateless (sem sessão)
 
 🧠 Conceitos aplicados
 
@@ -28,181 +44,154 @@ Arquitetura em camadas (Controller, Service, Repository)
 
 Uso de DTO para entrada e saída de dados
 
-Regras de negócio no Service
+Regras de negócio centralizadas no Service
 
-Modelagem relacional correta de pedidos
+Paginação com Spring Data
 
 Enum para controle de status
 
-Validações de dados
+Tratamento global de exceções
 
-Tratamento de exceções customizadas
+API REST segura com JWT
 
-📊 Modelagem do sistema
-
-O sistema foi projetado com base em uma modelagem real de pedidos:
-
-Pedido → PedidoItem → Produto
-🔹 Pedido
+📊 Modelagem
 
 Cliente
 
-Lista de itens
-
-Valor total
-
-Data
-
-Status
-
-🔹 PedidoItem
-
 Produto
 
-Quantidade
+Pedido
 
-Preço unitário (no momento da compra)
+PedidoItem
 
-Subtotal
+Relacionamento:
 
-🔹 Produto
-
-Nome
-
-Preço
-
-🔥 Funcionalidades implementadas
-✔️ Gestão de Clientes
-
-CRUD completo
-
-✔️ Gestão de Produtos
-
-CRUD completo
-
-Bloqueio de exclusão de produtos vinculados a pedidos
-
-✔️ Gestão de Pedidos
-
-Criação de pedidos com múltiplos itens
-
-Cálculo automático do valor total
-
-Armazenamento de preço unitário no momento da compra
-
-Paginação de pedidos
-
-Busca por ID
-
-🔄 Fluxo de criação de pedido
-Exemplo de requisição:
-{
-  "clienteId": 1,
-  "itens": [
-    {
-      "produtoId": 1,
-      "quantidade": 2
-    },
-    {
-      "produtoId": 2,
-      "quantidade": 1
-    }
-  ]
-}
-O backend realiza:
-
-Busca o cliente pelo ID
-
-Busca cada produto pelo ID
-
-Valida a quantidade de cada item
-
-Define o preço unitário com base no produto
-
-Calcula o subtotal de cada item
-
-Soma todos os subtotais para gerar o valor total
-
-Define o status inicial como PENDENTE
-
-Persiste o pedido no banco
-
-🔄 Controle de status do pedido
-
-O pedido possui controle de fluxo através de Enum:
-
-PENDENTE → PROCESSANDO → ENVIADO → ENTREGUE
-Regras implementadas:
-
-Não é possível pular etapas
-
-Não é possível alterar pedidos já finalizados (ENTREGUE)
-
-Não é possível alterar pedidos cancelados
-
-📌 Endpoints
+Pedido → PedidoItem → Produto
+🔥 Funcionalidades
 👤 Clientes
 
-GET /clientes → listar clientes
+CRUD completo
 
-GET /clientes/{id} → buscar por ID
-
-POST /clientes → criar cliente
-
-PUT /clientes/{id} → atualizar cliente
-
-DELETE /clientes/{id} → deletar cliente
+Paginação
 
 📦 Produtos
 
-GET /produtos → listar produtos
+CRUD completo
 
-GET /produtos/{id} → buscar por ID
-
-POST /produtos → criar produto
-
-PUT /produtos/{id} → atualizar produto
-
-DELETE /produtos/{id} → deletar produto (com validação)
+Validação para impedir exclusão de produtos vinculados a pedidos
 
 🧾 Pedidos
 
-GET /pedidos?page=0&size=10 → listar pedidos com paginação
+Criação com múltiplos itens
 
-GET /pedidos/{id} → buscar pedido por ID
+Cálculo automático do valor total
 
-POST /pedidos → criar pedido
+Armazenamento de preço no momento da compra
 
-PATCH /pedidos/{id}/status?status=PROCESSANDO → atualizar status
+Controle de status com regras de negócio
+
+🔄 Controle de Status
+
+Fluxo:
+
+PENDENTE → PROCESSANDO → ENVIADO → ENTREGUE
+
+Regras:
+
+Não permite pular etapas
+
+Não permite alterar pedidos finalizados
+
+Não permite alterar pedidos cancelados
+
+🔑 Autenticação
+Registro
+POST /auth/register
+{
+  "nome": "Admin",
+  "email": "admin@email.com",
+  "senha": "123456",
+  "role": "ROLE_ADMIN"
+}
+Login
+POST /auth/login
+{
+  "email": "admin@email.com",
+  "senha": "123456"
+}
+
+Resposta:
+
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+🛡️ Autorização
+
+Utilizar no header:
+
+Authorization: Bearer SEU_TOKEN
+
+Regras:
+
+ADMIN → acesso total
+
+USER → apenas leitura (GET)
+
+📌 Endpoints
+Clientes
+
+GET /clientes
+
+GET /clientes/{id}
+
+POST /clientes
+
+PUT /clientes/{id}
+
+DELETE /clientes/{id}
+
+Produtos
+
+GET /produtos
+
+GET /produtos/{id}
+
+POST /produtos
+
+PUT /produtos/{id}
+
+DELETE /produtos/{id}
+
+Pedidos
+
+GET /pedidos
+
+GET /pedidos/{id}
+
+POST /pedidos
+
+PATCH /pedidos/{id}/status
 
 ⚠️ Tratamento de exceções
 
-O sistema possui tratamento global com:
+ResourceNotFoundException → 404
 
-ResourceNotFoundException → recurso não encontrado
+BusinessException → 400
 
-BusinessException → regras de negócio violadas
+Validação → 400
 
-Exemplo de resposta:
+Método inválido → 405
 
-{
-  "erro": "Erro de negócio",
-  "mensagem": "Pedido já foi finalizado",
-  "status": 400
-}
-▶️ Como executar o projeto
-# rodar aplicação
+Erro interno → 500
+
+▶️ Como executar
 ./mvnw spring-boot:run
 
-Ou pela IDE (IntelliJ / VS Code)
+Ou via IDE (IntelliJ / VS Code)
 
 🌐 Acesso
 http://localhost:8080
 💡 Próximas melhorias
-
-Autenticação com JWT
-
-Controle de acesso por perfil (roles)
 
 Testes unitários com JUnit
 
