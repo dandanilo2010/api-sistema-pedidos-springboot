@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,12 +21,16 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
+    // Apenas ADMIN pode criar
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ClienteDTO> criarCliente(@Valid @RequestBody ClienteDTO dto){
         ClienteDTO salvo = clienteService.criarCliente(dto);
         return new ResponseEntity<>(salvo, HttpStatus.CREATED);
     }
 
+    //  ADMIN e USER podem listar
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     public ResponseEntity<Page<ClienteDTO>> listarClientes(
             @RequestParam(defaultValue = "0") int page,
@@ -36,17 +41,23 @@ public class ClienteController {
         return ResponseEntity.ok(clientes);
     }
 
+    //  ADMIN e USER podem buscar por id
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<ClienteDTO> buscarPorId(@PathVariable Long id){
         return ResponseEntity.ok(clienteService.buscarPorId(id));
     }
 
+    //  Apenas ADMIN pode atualizar
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<ClienteDTO> atualizarCliente(@PathVariable Long id,
                                                        @Valid @RequestBody ClienteDTO dto){
         return ResponseEntity.ok(clienteService.atualizarCliente(id, dto));
     }
 
+    //  Apenas ADMIN pode deletar
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarCliente(@PathVariable Long id){
         clienteService.deletarCliente(id);
