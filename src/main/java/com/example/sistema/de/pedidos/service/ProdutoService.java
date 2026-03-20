@@ -4,6 +4,7 @@ import com.example.sistema.de.pedidos.dto.ProdutoDTO;
 import com.example.sistema.de.pedidos.entity.ProdutoEntity;
 import com.example.sistema.de.pedidos.exception.BusinessException;
 import com.example.sistema.de.pedidos.exception.ResourceNotFoundException;
+import com.example.sistema.de.pedidos.repository.PedidoItemRepository;
 import com.example.sistema.de.pedidos.repository.ProdutoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final PedidoItemRepository pedidoItemRepository;
 
-    public ProdutoService(ProdutoRepository produtoRepository) {
+
+    public ProdutoService(ProdutoRepository produtoRepository, PedidoItemRepository pedidoItemRepository) {
         this.produtoRepository = produtoRepository;
+        this.pedidoItemRepository = pedidoItemRepository;
     }
 
     // Criar produto a partir de DTO
@@ -52,12 +56,13 @@ public class ProdutoService {
         return toDTO(atualizado);
     }
 
-    // Deletar produto
     public void deletarProduto(Long id){
         ProdutoEntity produto = buscarPorIdEntity(id);
-        if(produto.getPedidos() != null && !produto.getPedidos().isEmpty()){
+
+        if (pedidoItemRepository.existsByProdutoId(id)) {
             throw new BusinessException("Produto não pode ser deletado pois está associado a um pedido");
         }
+
         produtoRepository.delete(produto);
     }
 

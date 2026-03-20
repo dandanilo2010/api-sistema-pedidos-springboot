@@ -1,9 +1,8 @@
 package com.example.sistema.de.pedidos.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,16 +20,17 @@ public class PedidoDTO {
 
     private Long id;
 
-    @NotBlank(message = "O nome do cliente é obrigatório")
+    @NotNull(message = "O id do cliente é obrigatório")
+    private Long clienteId;
+
     private String nomeCliente;
 
-    @NotEmpty(message = "O pedido deve conter ao menos um produto")
-    private List<@NotBlank(message = "O nome do produto não pode estar vazio") String> nomesProdutos;
+    @NotEmpty(message = "O pedido deve conter ao menos um item")
+    private List<@Valid PedidoItemDTO> itens;
 
-    @NotNull(message = "O valor total é obrigatório")
-    @Positive(message = "O valor total deve ser maior que zero")
     private BigDecimal valorTotal;
 
-    @NotNull(message = "A data do pedido é obrigatória")
     private LocalDateTime dataPedido;
+
+    private String status;
 }

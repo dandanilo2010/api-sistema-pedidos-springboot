@@ -1,17 +1,15 @@
 package com.example.sistema.de.pedidos.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
+@Table(name = "produtos")
 @Getter
 @Setter
-@Table(name = "produtos")
 public class ProdutoEntity {
 
     @Id
@@ -23,10 +21,4 @@ public class ProdutoEntity {
 
     @Column(nullable = false)
     private BigDecimal preco;
-
-    @ManyToMany(mappedBy = "produtos")
-    @JsonIgnore
-    private List<PedidoEntity> pedidos;
-
-
 }

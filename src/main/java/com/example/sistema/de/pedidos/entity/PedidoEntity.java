@@ -1,5 +1,6 @@
 package com.example.sistema.de.pedidos.entity;
 
+import com.example.sistema.de.pedidos.enums.StatusPedido;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,15 +23,16 @@ public class PedidoEntity {
     @JoinColumn(name = "cliente_id", nullable = false)
     private ClienteEntity cliente;
 
-    @ManyToMany
-    @JoinTable(
-            name = "pedido_produtos",
-            joinColumns = @JoinColumn(name = "pedido_id"),
-            inverseJoinColumns = @JoinColumn(name = "produto_id")
-    )
-    private List<ProdutoEntity> produtos;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PedidoItemEntity> itens;
 
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal;
 
+    @Column(nullable = false)
     private LocalDateTime dataPedido;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusPedido status;
 }
