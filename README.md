@@ -22,6 +22,10 @@ Bean Validation
 
 Maven
 
+JUnit 
+
+Mockito
+
 🔐 Segurança
 
 Autenticação com JWT
@@ -193,11 +197,6 @@ Ou via IDE (IntelliJ / VS Code)
 
 🌐 Acesso
 http://localhost:8080
-💡 Próximas melhorias
-
-Testes unitários com JUnit
-
-Documentação com Swagger
 
 👨‍💻 Autor
 
