@@ -54,6 +54,8 @@ Tratamento global de exceções
 
 API REST segura com JWT
 
+Documentação automática com Swagger
+
 📊 Modelagem
 
 Cliente
